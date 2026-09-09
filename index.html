@@ -15,6 +15,363 @@
 .page{display:none}.page.active{display:block}.chat{min-height:46vh;display:flex;flex-direction:column;gap:10px;margin-bottom:12px}.msg{max-width:88%;padding:12px 14px;border-radius:17px;line-height:1.5;white-space:pre-wrap}.user{align-self:flex-end;background:linear-gradient(135deg,#6d3ed1,#9b3f83)}.ai{align-self:flex-start;background:var(--panel2);border:1px solid #ffffff0d}.thinking{color:#cfcfe0;font-style:italic}.composer{display:flex;gap:8px}.composer textarea{flex:1;resize:none;min-height:52px;max-height:150px;border:1px solid var(--line);border-radius:16px;background:#0e0e12;color:#fff;padding:14px;outline:none}.send{width:54px;border:0;border-radius:16px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;font-size:20px;cursor:pointer}.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.tool{padding:16px;text-align:left}.tool strong{display:block;font-size:16px;margin-bottom:4px}.tool span{color:var(--muted);font-size:13px}.result{margin-top:12px;white-space:pre-wrap;line-height:1.55}.profile{display:grid;gap:10px}.row{display:flex;justify-content:space-between;padding:13px 0;border-bottom:1px solid var(--line)}.row:last-child{border:0}.bottom{position:fixed;left:50%;bottom:12px;transform:translateX(-50%);width:min(520px,calc(100% - 24px));display:flex;justify-content:space-around;background:#15151ddd;border:1px solid #ffffff12;border-radius:20px;padding:8px;backdrop-filter:blur(18px);z-index:5}.bottom button{background:none;border:0;color:#aaa;padding:9px 18px;font-size:12px}.bottom button.active{color:#fff}.imagebox img{max-width:100%;border-radius:18px;margin-top:12px}.hint{color:var(--muted);font-size:12px;margin-top:8px}
 @media(min-width:760px){.grid{grid-template-columns:repeat(4,1fr)}.bottom{display:none}.app{padding-bottom:30px}.chat{min-height:52vh}}
 </style>
+
+<style id="kira-ai-theme">
+/* KIRA_THEME_START */
+/* KIRA_THEME_START */
+
+:root{
+  --bg:#08090a;
+  --panel:#101112;
+  --panel-2:#151617;
+  --panel-3:#1b1c1e;
+  --line:#ffffff16;
+  --line-strong:#ffffff2b;
+  --text:#f5f5f5;
+  --muted:#85878b;
+  --soft:#c6c8cb;
+  --accent:#ededed;
+  --success:#8fe3b0;
+  --max:1280px;
+}
+
+*{
+  box-sizing:border-box;
+}
+
+html{
+  scroll-behavior:smooth;
+  background:var(--bg);
+}
+
+body{
+  margin:0;
+  min-width:320px;
+  overflow-x:hidden;
+  color:var(--text);
+  background:
+    radial-gradient(ellipse at 78% 0%,#ffffff0d 0,transparent 30%),
+    radial-gradient(ellipse at 10% 65%,#ffffff08 0,transparent 32%),
+    linear-gradient(125deg,#050606 0%,#111214 48%,#08090a 100%);
+  font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  font-size:15px;
+  -webkit-font-smoothing:antialiased;
+}
+
+body:before{
+  content:"";
+  position:fixed;
+  inset:-20%;
+  z-index:-2;
+  pointer-events:none;
+  background:
+    repeating-linear-gradient(125deg,transparent 0 34px,#ffffff03 35px 36px),
+    radial-gradient(ellipse at 70% 30%,#ffffff08,transparent 35%);
+  animation:kiraAtmosphere 18s ease-in-out infinite alternate;
+}
+
+body:after{
+  content:"";
+  position:fixed;
+  inset:0;
+  z-index:-1;
+  pointer-events:none;
+  opacity:.12;
+  background-image:radial-gradient(#fff .55px,transparent .55px);
+  background-size:5px 5px;
+  mask-image:linear-gradient(to bottom,#000,transparent 88%);
+}
+
+button,
+textarea{
+  font:inherit;
+  -webkit-tap-highlight-color:transparent;
+}
+
+button{
+  touch-action:manipulation;
+}
+
+.app{
+  width:min(var(--max),calc(100% - 28px));
+  min-height:100vh;
+  margin:0 auto;
+  padding:22px 0 38px;
+}
+
+.top{
+  min-height:82px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 30px;
+  border:1px solid var(--line);
+  border-bottom:0;
+  background:#0b0c0de8;
+  box-shadow:0 20px 70px #0008;
+  backdrop-filter:blur(20px);
+  -webkit-backdrop-filter:blur(20px);
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:14px;
+}
+
+.logo{
+  width:48px;
+  height:48px;
+  display:grid;
+  place-items:center;
+  border:1px solid #ffffff24;
+  border-radius:0;
+  background:
+    linear-gradient(145deg,#202123,#111213);
+  box-shadow:
+    inset 0 0 25px #fff1,
+    0 12px 30px #0008;
+  font-size:23px;
+  transition:.3s ease;
+}
+
+.logo:hover{
+  transform:rotate(-6deg) scale(1.05);
+  box-shadow:inset 0 0 25px #fff2,0 0 28px #fff2;
+}
+
+.brand b{
+  display:block;
+  color:#f4f4f4;
+  font-size:16px;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+}
+
+.brand small{
+  display:block;
+  margin-top:5px;
+  color:#65676b;
+  font-size:10px;
+  letter-spacing:.2em;
+  text-transform:uppercase;
+}
+
+.hero{
+  position:relative;
+  min-height:330px;
+  overflow:hidden;
+  margin:0;
+  padding:52px 58px 44px;
+  border:1px solid var(--line);
+  border-top:1px solid var(--line);
+  border-radius:0;
+  background:
+    linear-gradient(125deg,#151617e8,#0b0c0de8 72%),
+    #101112;
+  box-shadow:inset 0 1px #fff08,0 28px 100px #0008;
+}
+
+.hero:before{
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  background:
+    repeating-linear-gradient(128deg,#ffffff06 0 2px,transparent 2px 24px),
+    radial-gradient(ellipse at 78% 38%,#ffffff0d,transparent 42%);
+  transform:skewY(-5deg);
+  animation:kiraFlow 14s ease-in-out infinite alternate;
+}
+
+.hero:after{
+  content:"";
+  position:absolute;
+  right:-12%;
+  top:12%;
+  width:52%;
+  height:70%;
+  pointer-events:none;
+  background:radial-gradient(ellipse,#ffffff0b,transparent 68%);
+  filter:blur(12px);
+}
+
+.hero h1{
+  position:relative;
+  z-index:1;
+  max-width:760px;
+  margin:0 0 18px;
+  color:#f5f5f5;
+  font-size:clamp(42px,7vw,82px);
+  font-weight:800;
+  line-height:.94;
+  letter-spacing:-.065em;
+  text-transform:uppercase;
+  text-shadow:0 0 35px #fff1;
+}
+
+.hero p{
+  position:relative;
+  z-index:1;
+  max-width:610px;
+  margin:0;
+  color:#85878b;
+  font-size:14px;
+  line-height:1.8;
+}
+
+.status{
+  position:relative;
+  z-index:1;
+  display:inline-flex;
+  align-items:center;
+  gap:9px;
+  margin-top:24px;
+  color:#77797d;
+  font-size:10px;
+  letter-spacing:.16em;
+  text-transform:uppercase;
+}
+
+.dot{
+  width:7px;
+  height:7px;
+  border-radius:50%;
+  background:var(--success);
+  box-shadow:0 0 13px var(--success);
+}
+
+.tabs{
+  display:flex;
+  gap:28px;
+  overflow-x:auto;
+  margin:0;
+  padding:0 30px;
+  border:1px solid var(--line);
+  border-top:0;
+  background:#0b0c0de8;
+  scrollbar-width:none;
+}
+
+.tabs::-webkit-scrollbar{
+  display:none;
+}
+
+.tab{
+  position:relative;
+  flex:0 0 auto;
+  border:0;
+  border-radius:0;
+  padding:17px 0 15px;
+  color:#696b6f;
+  background:transparent;
+  cursor:pointer;
+  font-size:11px;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  transition:.25s ease;
+}
+
+.tab:after{
+  content:"";
+  position:absolute;
+  right:0;
+  bottom:-1px;
+  left:0;
+  height:1px;
+  background:#fff;
+  opacity:0;
+  transform:scaleX(0);
+  transition:.25s ease;
+}
+
+.tab:hover,
+.tab.active{
+  color:#fff;
+}
+
+.tab.active:after{
+  opacity:1;
+  transform:scaleX(1);
+}
+
+.page{
+  display:none;
+  padding:30px 0 0;
+}
+
+.page.active{
+  display:block;
+  animation:kiraPageIn .45s ease both;
+}
+
+.card{
+  position:relative;
+  overflow:hidden;
+  border:1px solid var(--line);
+  border-radius:0;
+  background:linear-gradient(145deg,#151617ed,#0c0d0ee8);
+  box-shadow:inset 0 1px #fff07,0 24px 70px #0007;
+}
+
+.card:before{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:0;
+  pointer-events:none;
+  background:linear-gradient(120deg,#fff05,transparent 25%,transparent 75%,#fff03);
+}
+
+.chat{
+  position:relative;
+  z-index:1;
+  height:min(53vh,560px);
+  min-height:360px;
+  display:flex;
+  flex-direction:column;
+  gap:0;
+  overflow:auto;
+  margin:0;
+  padding:22px;
+  scrollbar-width:thin;
+  scrollbar-color:#484a4d transparent;
+}
+
+.msg{
+  position:relative;
+  z-index:1;
+  max-width:min(82%,720px);
+  margin:0 0 11px;
+  padding:13px 15px;
+  border:1px solid #ffffff0d;
+  border-radius:0;
+  color:#d9d9db;
+  background:#151617;
+  font-size:14px;
+  line-height:1.6;
+  white-space:pre-wrap;
+  animation:kiraMessage .35s ease both;
+}
+
+.msg.ai{
+  align-self:flex-start;
+  background:#151617;
+  color:#d9d9db;
+}
+
+.msg.user{
+  align-self:flex-end;
+  background:#e9e9e9;
+  color:#101010;
+  border-color:#fff;
+}
+
+.msg.thinking{
+  color:#77797d;
+  background:#
+/* KIRA_THEME_END */
+</style>
 </head>
 <body>
 <div class="app">
