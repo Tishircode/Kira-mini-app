@@ -3,512 +3,207 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#09090b">
+<meta name="theme-color" content="#090a0f">
 <title>Kira AI</title>
-<script src="https://telegram.org/js/telegram-web-app.js"></script>
+
 <style>
-:root{--bg:#08080a;--panel:#111116;--panel2:#17171d;--line:#292930;--text:#f5f5f7;--muted:#9b9ba6;--accent:#8b5cf6;--accent2:#ec4899;--ok:#34d399}
-*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 15% 0,#24123b 0,transparent 35%),radial-gradient(circle at 100% 20%,#35102d 0,transparent 30%),var(--bg);color:var(--text);font:15px system-ui,-apple-system,Segoe UI,Roboto,sans-serif;min-height:100vh}
-.app{max-width:1100px;margin:auto;padding:18px 16px 100px}.top{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}.brand{display:flex;gap:11px;align-items:center}.logo{width:44px;height:44px;border-radius:14px;display:grid;place-items:center;background:linear-gradient(135deg,var(--accent),var(--accent2));font-size:24px;box-shadow:0 10px 35px #0008}.brand b{font-size:20px}.brand small{display:block;color:var(--muted);margin-top:2px}
-.card{background:#111116d9;border:1px solid #ffffff10;border-radius:22px;padding:18px;box-shadow:0 18px 50px #0005;backdrop-filter:blur(18px)}.hero{padding:25px;margin-bottom:14px}.hero h1{margin:0 0 8px;font-size:32px;letter-spacing:-1px}.hero p{margin:0;color:var(--muted);line-height:1.5}.status{display:inline-flex;align-items:center;gap:7px;margin-top:15px;color:#c9c9d2;font-size:13px}.dot{width:8px;height:8px;border-radius:50%;background:var(--ok);box-shadow:0 0 12px var(--ok)}
-.tabs{display:flex;gap:8px;overflow:auto;margin-bottom:14px}.tab,.tool{border:1px solid var(--line);background:#15151a;color:#ddd;border-radius:14px;padding:11px 14px;white-space:nowrap;cursor:pointer}.tab.active{background:linear-gradient(135deg,#6d3ed1,#a83e7e);border-color:transparent;color:#fff}
-.page{display:none}.page.active{display:block}.chat{min-height:46vh;display:flex;flex-direction:column;gap:10px;margin-bottom:12px}.msg{max-width:88%;padding:12px 14px;border-radius:17px;line-height:1.5;white-space:pre-wrap}.user{align-self:flex-end;background:linear-gradient(135deg,#6d3ed1,#9b3f83)}.ai{align-self:flex-start;background:var(--panel2);border:1px solid #ffffff0d}.thinking{color:#cfcfe0;font-style:italic}.composer{display:flex;gap:8px}.composer textarea{flex:1;resize:none;min-height:52px;max-height:150px;border:1px solid var(--line);border-radius:16px;background:#0e0e12;color:#fff;padding:14px;outline:none}.send{width:54px;border:0;border-radius:16px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;font-size:20px;cursor:pointer}.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.tool{padding:16px;text-align:left}.tool strong{display:block;font-size:16px;margin-bottom:4px}.tool span{color:var(--muted);font-size:13px}.result{margin-top:12px;white-space:pre-wrap;line-height:1.55}.profile{display:grid;gap:10px}.row{display:flex;justify-content:space-between;padding:13px 0;border-bottom:1px solid var(--line)}.row:last-child{border:0}.bottom{position:fixed;left:50%;bottom:12px;transform:translateX(-50%);width:min(520px,calc(100% - 24px));display:flex;justify-content:space-around;background:#15151ddd;border:1px solid #ffffff12;border-radius:20px;padding:8px;backdrop-filter:blur(18px);z-index:5}.bottom button{background:none;border:0;color:#aaa;padding:9px 18px;font-size:12px}.bottom button.active{color:#fff}.imagebox img{max-width:100%;border-radius:18px;margin-top:12px}.hint{color:var(--muted);font-size:12px;margin-top:8px}
-@media(min-width:760px){.grid{grid-template-columns:repeat(4,1fr)}.bottom{display:none}.app{padding-bottom:30px}.chat{min-height:52vh}}
-</style>
-
-<style id="kira-ai-theme">
-/* KIRA_THEME_START */
-/* KIRA_THEME_START */
-
 :root{
-  --bg:#08090a;
-  --panel:#101112;
-  --panel-2:#151617;
-  --panel-3:#1b1c1e;
-  --line:#ffffff16;
-  --line-strong:#ffffff2b;
-  --text:#f5f5f5;
-  --muted:#85878b;
-  --soft:#c6c8cb;
-  --accent:#ededed;
-  --success:#8fe3b0;
-  --max:1280px;
+  --bg:#090a0f;
+  --surface:#11131b;
+  --surface-2:#171a24;
+  --surface-3:#202331;
+  --line:#ffffff14;
+  --line-strong:#ffffff29;
+  --text:#f5f6fb;
+  --muted:#858b9d;
+  --soft:#b9bed0;
+  --violet:#8d7aff;
+  --pink:#ff76bd;
+  --cyan:#74d8ff;
+  --green:#8ee8b2;
+  --radius:24px;
+  --max:1240px;
 }
-
-*{
-  box-sizing:border-box;
-}
-
-html{
-  scroll-behavior:smooth;
-  background:var(--bg);
-}
-
+*{box-sizing:border-box}
+html{background:var(--bg);scroll-behavior:smooth}
 body{
-  margin:0;
-  min-width:320px;
-  overflow-x:hidden;
-  color:var(--text);
+  margin:0;min-width:320px;color:var(--text);
+  font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
   background:
-    radial-gradient(ellipse at 78% 0%,#ffffff0d 0,transparent 30%),
-    radial-gradient(ellipse at 10% 65%,#ffffff08 0,transparent 32%),
-    linear-gradient(125deg,#050606 0%,#111214 48%,#08090a 100%);
-  font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
-  font-size:15px;
-  -webkit-font-smoothing:antialiased;
+    radial-gradient(circle at 10% -5%,#46347c55,transparent 31%),
+    radial-gradient(circle at 94% 12%,#7826503b,transparent 28%),
+    linear-gradient(145deg,#08090e,#0d1019 55%,#090a0f);
+  min-height:100vh;overflow-x:hidden;
 }
-
 body:before{
-  content:"";
-  position:fixed;
-  inset:-20%;
-  z-index:-2;
-  pointer-events:none;
-  background:
-    repeating-linear-gradient(125deg,transparent 0 34px,#ffffff03 35px 36px),
-    radial-gradient(ellipse at 70% 30%,#ffffff08,transparent 35%);
-  animation:kiraAtmosphere 18s ease-in-out infinite alternate;
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;opacity:.35;
+  background-image:linear-gradient(#fff006 1px,transparent 1px),linear-gradient(90deg,#fff006 1px,transparent 1px);
+  background-size:44px 44px;mask-image:linear-gradient(to bottom,#000,transparent 75%);
 }
-
-body:after{
-  content:"";
-  position:fixed;
-  inset:0;
-  z-index:-1;
-  pointer-events:none;
-  opacity:.12;
-  background-image:radial-gradient(#fff .55px,transparent .55px);
-  background-size:5px 5px;
-  mask-image:linear-gradient(to bottom,#000,transparent 88%);
+button,textarea{font:inherit}
+button{touch-action:manipulation}
+.app{width:min(var(--max),calc(100% - 32px));margin:auto;padding:20px 0 38px}
+.layout{display:grid;grid-template-columns:250px 1fr;gap:18px;min-height:calc(100vh - 58px)}
+.sidebar{
+  position:sticky;top:20px;height:calc(100vh - 40px);display:flex;flex-direction:column;
+  padding:24px 18px;border:1px solid var(--line);border-radius:28px;
+  background:#10121ae8;backdrop-filter:blur(20px);box-shadow:0 24px 80px #0007;
 }
-
-button,
-textarea{
-  font:inherit;
-  -webkit-tap-highlight-color:transparent;
+.identity{display:flex;align-items:center;gap:12px;padding:4px 7px 36px}
+.mark{
+  width:43px;height:43px;border-radius:15px;display:grid;place-items:center;font-size:23px;
+  background:linear-gradient(135deg,var(--violet),var(--pink));box-shadow:0 10px 28px #8d7aff44;
 }
-
-button{
-  touch-action:manipulation;
+.identity b{font-size:17px;letter-spacing:.04em}.identity small{display:block;margin-top:3px;color:var(--muted);font-size:10px;letter-spacing:.13em;text-transform:uppercase}
+.nav{display:grid;gap:8px}
+.nav button,.mobile-nav button{
+  border:1px solid transparent;background:transparent;color:var(--muted);cursor:pointer;
+  border-radius:15px;text-align:left;transition:.25s;
 }
-
-.app{
-  width:min(var(--max),calc(100% - 28px));
-  min-height:100vh;
-  margin:0 auto;
-  padding:22px 0 38px;
-}
-
-.top{
-  min-height:82px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  padding:0 30px;
-  border:1px solid var(--line);
-  border-bottom:0;
-  background:#0b0c0de8;
-  box-shadow:0 20px 70px #0008;
-  backdrop-filter:blur(20px);
-  -webkit-backdrop-filter:blur(20px);
-}
-
-.brand{
-  display:flex;
-  align-items:center;
-  gap:14px;
-}
-
-.logo{
-  width:48px;
-  height:48px;
-  display:grid;
-  place-items:center;
-  border:1px solid #ffffff24;
-  border-radius:0;
-  background:
-    linear-gradient(145deg,#202123,#111213);
-  box-shadow:
-    inset 0 0 25px #fff1,
-    0 12px 30px #0008;
-  font-size:23px;
-  transition:.3s ease;
-}
-
-.logo:hover{
-  transform:rotate(-6deg) scale(1.05);
-  box-shadow:inset 0 0 25px #fff2,0 0 28px #fff2;
-}
-
-.brand b{
-  display:block;
-  color:#f4f4f4;
-  font-size:16px;
-  letter-spacing:.08em;
-  text-transform:uppercase;
-}
-
-.brand small{
-  display:block;
-  margin-top:5px;
-  color:#65676b;
-  font-size:10px;
-  letter-spacing:.2em;
-  text-transform:uppercase;
-}
-
+.nav button{display:flex;align-items:center;gap:13px;padding:13px 14px;font-size:13px}
+.nav button i{width:25px;font-style:normal;text-align:center;font-size:18px}
+.nav button:hover,.nav button.active{color:#fff;background:#ffffff0c;border-color:var(--line)}
+.nav button.active{box-shadow:inset 3px 0 var(--violet)}
+.sidebar-footer{margin-top:auto;padding:16px 9px;color:var(--muted);font-size:11px;line-height:1.6;border-top:1px solid var(--line)}
+.online{display:flex;align-items:center;gap:7px;color:var(--green);margin-bottom:8px}.online:before{content:"";width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 12px var(--green)}
+.main{min-width:0}
+.topbar{height:60px;display:flex;justify-content:space-between;align-items:center;padding:0 8px 16px}
+.eyebrow{color:var(--muted);font-size:11px;letter-spacing:.17em;text-transform:uppercase}
+.user-chip{display:flex;align-items:center;gap:9px;color:var(--soft);font-size:12px}
+.avatar{width:30px;height:30px;display:grid;place-items:center;border-radius:10px;background:var(--surface-3);border:1px solid var(--line)}
 .hero{
-  position:relative;
-  min-height:330px;
-  overflow:hidden;
-  margin:0;
-  padding:52px 58px 44px;
-  border:1px solid var(--line);
-  border-top:1px solid var(--line);
-  border-radius:0;
-  background:
-    linear-gradient(125deg,#151617e8,#0b0c0de8 72%),
-    #101112;
-  box-shadow:inset 0 1px #fff08,0 28px 100px #0008;
+  position:relative;overflow:hidden;display:grid;grid-template-columns:1.3fr .7fr;gap:20px;
+  padding:38px 40px;border:1px solid var(--line);border-radius:var(--radius);
+  background:linear-gradient(120deg,#171a27f2,#11131bf2);box-shadow:0 25px 75px #0008;
 }
-
-.hero:before{
-  content:"";
-  position:absolute;
-  inset:0;
-  pointer-events:none;
-  background:
-    repeating-linear-gradient(128deg,#ffffff06 0 2px,transparent 2px 24px),
-    radial-gradient(ellipse at 78% 38%,#ffffff0d,transparent 42%);
-  transform:skewY(-5deg);
-  animation:kiraFlow 14s ease-in-out infinite alternate;
-}
-
 .hero:after{
-  content:"";
-  position:absolute;
-  right:-12%;
-  top:12%;
-  width:52%;
-  height:70%;
-  pointer-events:none;
-  background:radial-gradient(ellipse,#ffffff0b,transparent 68%);
-  filter:blur(12px);
+  content:"";position:absolute;width:340px;height:340px;right:-70px;top:-120px;border-radius:50%;
+  background:radial-gradient(circle,#a887ff45,transparent 67%);filter:blur(5px);animation:pulse 7s ease-in-out infinite;
 }
-
-.hero h1{
-  position:relative;
-  z-index:1;
-  max-width:760px;
-  margin:0 0 18px;
-  color:#f5f5f5;
-  font-size:clamp(42px,7vw,82px);
-  font-weight:800;
-  line-height:.94;
-  letter-spacing:-.065em;
-  text-transform:uppercase;
-  text-shadow:0 0 35px #fff1;
+@keyframes pulse{50%{transform:scale(1.15);opacity:.7}}
+.hero-copy,.hero-card{position:relative;z-index:1}
+.kicker{color:var(--violet);font-size:11px;letter-spacing:.18em;text-transform:uppercase;margin-bottom:15px}
+h1{max-width:700px;margin:0;font-size:clamp(38px,6vw,76px);line-height:.96;letter-spacing:-.065em}
+h1 span{background:linear-gradient(100deg,#fff,var(--violet),var(--pink));-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p{max-width:580px;margin:20px 0 0;color:var(--muted);font-size:14px;line-height:1.75}
+.hero-card{align-self:end;padding:18px;border:1px solid var(--line);border-radius:18px;background:#ffffff08}
+.hero-card small{color:var(--muted);font-size:10px;letter-spacing:.12em;text-transform:uppercase}
+.hero-card strong{display:block;margin-top:9px;font-size:27px}.hero-card em{color:var(--green);font-size:12px;font-style:normal}
+.tabs{display:flex;gap:8px;margin:18px 0 14px}
+.tab{border:1px solid var(--line);border-radius:14px;padding:10px 15px;background:#10121a;color:var(--muted);cursor:pointer;font-size:12px;transition:.25s}
+.tab:hover,.tab.active{color:#fff;border-color:#a99cff66;background:linear-gradient(135deg,#8d7aff2b,#ff76bd16)}
+.page{display:none}.page.active{display:block;animation:appear .35s ease both}
+@keyframes appear{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.section-title{display:flex;justify-content:space-between;align-items:end;margin:24px 2px 12px}
+.section-title h2{margin:0;font-size:20px;letter-spacing:-.03em}.section-title span{color:var(--muted);font-size:11px}
+.card{border:1px solid var(--line);border-radius:var(--radius);background:#11131bdc;box-shadow:0 18px 55px #0006;backdrop-filter:blur(16px)}
+.chat{height:min(54vh,570px);min-height:360px;overflow:auto;padding:20px;scrollbar-width:thin;scrollbar-color:#505467 transparent}
+.msg{max-width:min(82%,700px);padding:13px 15px;margin-bottom:10px;border:1px solid var(--line);border-radius:17px;line-height:1.58;font-size:14px;white-space:pre-wrap;animation:msg .3s ease both}
+@keyframes msg{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.msg.ai{margin-right:auto;background:var(--surface-2);color:#e1e4ef}.msg.user{margin-left:auto;background:linear-gradient(135deg,#7968ef,#bd5597);border-color:transparent}.msg.thinking{color:var(--muted);font-style:italic}
+.composer{display:flex;gap:10px;padding:14px;border-top:1px solid var(--line)}
+textarea{width:100%;resize:none;min-height:52px;max-height:150px;padding:14px 15px;outline:none;color:#fff;background:#0b0d13;border:1px solid var(--line);border-radius:16px}
+textarea:focus{border-color:#a99cff88;box-shadow:0 0 0 3px #8d7aff12}
+.send{width:58px;border:0;border-radius:16px;color:#fff;background:linear-gradient(135deg,var(--violet),var(--pink));cursor:pointer;font-size:21px;transition:.2s}.send:hover{transform:translateY(-2px)}.send:disabled{opacity:.5}
+.hint{padding:0 17px 14px;color:#62697b;font-size:10px}
+.tools-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:11px}
+.tool{min-height:132px;padding:17px;text-align:left;border:1px solid var(--line);border-radius:19px;color:#fff;background:linear-gradient(145deg,#171a25,#10121a);cursor:pointer;transition:.25s}
+.tool:hover{transform:translateY(-4px);border-color:#a99cff66;background:#1b1e2c}.tool strong{display:block;font-size:15px;margin-bottom:9px}.tool span{color:var(--muted);font-size:11px;line-height:1.4}
+.result{display:none;margin-top:13px;padding:18px;line-height:1.65;white-space:pre-wrap;color:var(--soft)}.result img{display:block;max-width:100%;margin-top:12px;border-radius:14px}
+.profile-card{padding:7px 20px}.row{display:flex;justify-content:space-between;gap:20px;padding:18px 0;border-bottom:1px solid var(--line);font-size:13px;color:var(--muted)}.row:last-child{border:0}.row b{color:#fff;text-align:right}
+.mobile-nav{display:none}
+@media(max-width:850px){
+  .app{width:100%;padding:0 14px 92px}.layout{display:block}.sidebar{display:none}.topbar{height:62px;padding:0 4px 10px}.hero{grid-template-columns:1fr;padding:28px 23px 23px}.hero-card{margin-top:8px}.tools-grid{grid-template-columns:repeat(2,1fr)}.tabs{overflow:auto;padding-bottom:2px}.tab{white-space:nowrap}.mobile-nav{display:flex;position:fixed;z-index:10;left:50%;bottom:12px;transform:translateX(-50%);width:calc(100% - 24px);justify-content:space-around;padding:7px;border:1px solid var(--line);border-radius:20px;background:#171a24eb;backdrop-filter:blur(18px);box-shadow:0 12px 35px #0009}.mobile-nav button{text-align:center;padding:8px 17px;font-size:10px}.mobile-nav button.active{color:#fff;background:#ffffff0d}.mobile-nav button i{display:block;font-style:normal;font-size:17px;margin-bottom:2px}.chat{min-height:52vh;height:54vh}.msg{max-width:90%}
 }
-
-.hero p{
-  position:relative;
-  z-index:1;
-  max-width:610px;
-  margin:0;
-  color:#85878b;
-  font-size:14px;
-  line-height:1.8;
-}
-
-.status{
-  position:relative;
-  z-index:1;
-  display:inline-flex;
-  align-items:center;
-  gap:9px;
-  margin-top:24px;
-  color:#77797d;
-  font-size:10px;
-  letter-spacing:.16em;
-  text-transform:uppercase;
-}
-
-.dot{
-  width:7px;
-  height:7px;
-  border-radius:50%;
-  background:var(--success);
-  box-shadow:0 0 13px var(--success);
-}
-
-.tabs{
-  display:flex;
-  gap:28px;
-  overflow-x:auto;
-  margin:0;
-  padding:0 30px;
-  border:1px solid var(--line);
-  border-top:0;
-  background:#0b0c0de8;
-  scrollbar-width:none;
-}
-
-.tabs::-webkit-scrollbar{
-  display:none;
-}
-
-.tab{
-  position:relative;
-  flex:0 0 auto;
-  border:0;
-  border-radius:0;
-  padding:17px 0 15px;
-  color:#696b6f;
-  background:transparent;
-  cursor:pointer;
-  font-size:11px;
-  letter-spacing:.12em;
-  text-transform:uppercase;
-  transition:.25s ease;
-}
-
-.tab:after{
-  content:"";
-  position:absolute;
-  right:0;
-  bottom:-1px;
-  left:0;
-  height:1px;
-  background:#fff;
-  opacity:0;
-  transform:scaleX(0);
-  transition:.25s ease;
-}
-
-.tab:hover,
-.tab.active{
-  color:#fff;
-}
-
-.tab.active:after{
-  opacity:1;
-  transform:scaleX(1);
-}
-
-.page{
-  display:none;
-  padding:30px 0 0;
-}
-
-.page.active{
-  display:block;
-  animation:kiraPageIn .45s ease both;
-}
-
-.card{
-  position:relative;
-  overflow:hidden;
-  border:1px solid var(--line);
-  border-radius:0;
-  background:linear-gradient(145deg,#151617ed,#0c0d0ee8);
-  box-shadow:inset 0 1px #fff07,0 24px 70px #0007;
-}
-
-.card:before{
-  content:"";
-  position:absolute;
-  inset:0;
-  z-index:0;
-  pointer-events:none;
-  background:linear-gradient(120deg,#fff05,transparent 25%,transparent 75%,#fff03);
-}
-
-.chat{
-  position:relative;
-  z-index:1;
-  height:min(53vh,560px);
-  min-height:360px;
-  display:flex;
-  flex-direction:column;
-  gap:0;
-  overflow:auto;
-  margin:0;
-  padding:22px;
-  scrollbar-width:thin;
-  scrollbar-color:#484a4d transparent;
-}
-
-.msg{
-  position:relative;
-  z-index:1;
-  max-width:min(82%,720px);
-  margin:0 0 11px;
-  padding:13px 15px;
-  border:1px solid #ffffff0d;
-  border-radius:0;
-  color:#d9d9db;
-  background:#151617;
-  font-size:14px;
-  line-height:1.6;
-  white-space:pre-wrap;
-  animation:kiraMessage .35s ease both;
-}
-
-.msg.ai{
-  align-self:flex-start;
-  background:#151617;
-  color:#d9d9db;
-}
-
-.msg.user{
-  align-self:flex-end;
-  background:#e9e9e9;
-  color:#101010;
-  border-color:#fff;
-}
-
-.msg.thinking{
-  color:#77797d;
-  background:#
-/* KIRA_THEME_END */
+@media(max-width:420px){h1{font-size:40px}.hero p{font-size:13px}.tool{min-height:116px;padding:14px}.tool strong{font-size:14px}.profile-card{padding:4px 15px}}
 </style>
 </head>
 <body>
 <div class="app">
-<header class="top">
-  <div class="brand"><div class="logo">🦊</div><div><b>Kira AI</b><small>твоя умная помощница</small></div></div>
-</header>
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="identity"><div class="mark">🦊</div><div><b>Kira AI</b><small>smart companion</small></div></div>
+      <nav class="nav">
+        <button class="active" data-page="chat"><i>⌁</i>Чат</button>
+        <button data-page="tools"><i>✦</i>Инструменты</button>
+        <button data-page="profile"><i>◌</i>Профиль</button>
+      </nav>
+      <div class="sidebar-footer"><div class="online">Система активна</div>Персональный AI-помощник<br>внутри Telegram</div>
+    </aside>
 
-<section class="hero card">
-  <h1>Больше. Чётче. Удобнее.</h1>
-  <p>Kira AI работает прямо внутри Telegram: чат, инструменты, память и полезные функции в одном месте.</p>
-  <div class="status"><i class="dot"></i><span id="status">Telegram Mini App подключён</span></div>
-</section>
+    <main class="main">
+      <header class="topbar">
+        <div class="eyebrow">Kira workspace / 01</div>
+        <div class="user-chip"><span id="headerName">Гость</span><span class="avatar">✦</span></div>
+      </header>
 
-<nav class="tabs">
-  <button class="tab active" data-page="chat">💬 Чат</button>
-  <button class="tab" data-page="tools">🧰 Инструменты</button>
-  <button class="tab" data-page="profile">👤 Профиль</button>
-</nav>
+      <section class="hero">
+        <div class="hero-copy">
+          <div class="kicker">Ваш цифровой напарник</div>
+          <h1>Думай <span>шире.</span><br>Делай проще.</h1>
+          <p>Kira помогает разбираться в сложном, находить идеи и превращать задачи в понятные действия. Всё необходимое — в одном компактном пространстве.</p>
+        </div>
+        <div class="hero-card">
+          <small>Сегодня с Kira</small>
+          <strong id="heroState">Готова помочь</strong>
+          <em>● онлайн в Telegram</em>
+        </div>
+      </section>
 
-<section id="chat" class="page active">
-  <div class="card">
-    <div id="messages" class="chat">
-      <div class="msg ai">Привет! 🦊 Я Кира. Напиши, что нужно сделать — постараюсь помочь максимально понятно и по делу.</div>
-    </div>
-    <div class="composer">
-      <textarea id="input" placeholder="Напиши сообщение..." rows="1"></textarea>
-      <button class="send" id="send">➤</button>
-    </div>
-    <div class="hint">Enter — отправить · Shift+Enter — новая строка</div>
+      <nav class="tabs">
+        <button class="tab active" data-page="chat">Диалог</button>
+        <button class="tab" data-page="tools">Модули</button>
+        <button class="tab" data-page="profile">Мой профиль</button>
+      </nav>
+
+      <section id="chat" class="page active">
+        <div class="section-title"><h2>Личный диалог</h2><span>AI CONVERSATION</span></div>
+        <div class="card">
+          <div id="messages" class="chat">
+            <div class="msg ai">Привет! 🦊 Я Kira. Расскажи, с чем помочь — отвечу по делу и без лишнего шума.</div>
+          </div>
+          <div class="composer">
+            <textarea id="input" rows="1" placeholder="Напишите сообщение..."></textarea>
+            <button class="send" id="send" aria-label="Отправить">↑</button>
+          </div>
+          <div class="hint">Enter — отправить · Shift + Enter — перенос строки</div>
+        </div>
+      </section>
+
+      <section id="tools" class="page">
+        <div class="section-title"><h2>Быстрые модули</h2><span>USEFUL ACTIONS</span></div>
+        <div class="tools-grid">
+          <button class="tool" data-action="fact"><strong>🎲 Факт</strong><span>Узнать что-то неожиданное</span></button>
+          <button class="tool" data-action="idea"><strong>💡 Идея</strong><span>Получить свежий импульс</span></button>
+          <button class="tool" data-action="ton"><strong>💎 TON</strong><span>Состояние рынка и курс</span></button>
+          <button class="tool" data-action="mood"><strong>🥰 Настроение</strong><span>Как Kira себя чувствует</span></button>
+          <button class="tool" data-action="memory"><strong>🧠 Память</strong><span>Сохранённый контекст</span></button>
+          <button class="tool" data-action="bonus"><strong>🎁 Бонус</strong><span>Ежедневная награда</span></button>
+          <button class="tool" data-action="profile"><strong>👤 Профиль</strong><span>Посмотреть аккаунт</span></button>
+          <button class="tool" data-action="image"><strong>🎨 Образ</strong><span>Создать изображение</span></button>
+        </div>
+        <div id="toolResult" class="card result"></div>
+      </section>
+
+      <section id="profile" class="page">
+        <div class="section-title"><h2>Ваш профиль</h2><span>ACCOUNT DATA</span></div>
+        <div class="card profile-card">
+          <div class="row"><span>Пользователь</span><b id="pname">—</b></div>
+          <div class="row"><span>Telegram ID</span><b id="pid">—</b></div>
+          <div class="row"><span>Уровень доступа</span><b>Mini App</b></div>
+          <div class="row"><span>Статус</span><b style="color:var(--green)">● Online</b></div>
+        </div>
+      </section>
+    </main>
   </div>
-</section>
-
-<section id="tools" class="page">
-  <div class="grid">
-    <button class="tool" data-action="fact"><strong>🎲 Факт</strong><span>Интересный факт</span></button>
-    <button class="tool" data-action="idea"><strong>💡 Идея</strong><span>Новая идея</span></button>
-    <button class="tool" data-action="ton"><strong>💎 TON</strong><span>Курс и рынок</span></button>
-    <button class="tool" data-action="mood"><strong>🥰 Настроение</strong><span>Текущее настроение</span></button>
-    <button class="tool" data-action="memory"><strong>🧠 Память</strong><span>Что помнит Kira</span></button>
-    <button class="tool" data-action="bonus"><strong>🎁 Бонус</strong><span>Ежедневный бонус</span></button>
-    <button class="tool" data-action="profile"><strong>👤 Профиль</strong><span>Данные аккаунта</span></button>
-    <button class="tool" data-action="image"><strong>🎨 Изображение</strong><span>Создать картинку</span></button>
-  </div>
-  <div id="toolResult" class="card result" style="display:none"></div>
-</section>
-
-<section id="profile" class="page">
-  <div class="card profile" id="profileBox">
-    <div class="row"><span>Пользователь</span><b id="pname">—</b></div>
-    <div class="row"><span>Telegram ID</span><b id="pid">—</b></div>
-    <div class="row"><span>Версия</span><b>Mini App 1.0</b></div>
-    <div class="row"><span>Статус</span><b>🟢 Online</b></div>
-  </div>
-</section>
 </div>
 
-<nav class="bottom">
-  <button class="active" data-page="chat">💬<br>Чат</button>
-  <button data-page="tools">🧰<br>Инструменты</button>
-  <button data-page="profile">👤<br>Профиль</button>
+<nav class="mobile-nav">
+  <button class="active" data-page="chat"><i>⌁</i>Чат</button>
+  <button data-page="tools"><i>✦</i>Модули</button>
+  <button data-page="profile"><i>◌</i>Профиль</button>
 </nav>
 
-<script>
-const API='https://nvbxjmunpqswhvqljjed.supabase.co/functions/v1/kira-miniapp';
-const tg=window.Telegram?.WebApp;
-if(tg){tg.ready();tg.expand();}
 
-const $=s=>document.querySelector(s);
-const messages=$('#messages');
-
-function showPage(id){
-  document.querySelectorAll('.page').forEach(x=>x.classList.toggle('active',x.id===id));
-  document.querySelectorAll('[data-page]').forEach(x=>x.classList.toggle('active',x.dataset.page===id));
-  if(id==='profile') loadProfile();
-}
-document.querySelectorAll('[data-page]').forEach(x=>x.onclick=()=>showPage(x.dataset.page));
-
-function add(text,who='ai'){
-  const d=document.createElement('div'); d.className='msg '+who; d.textContent=text; messages.appendChild(d); messages.scrollTop=messages.scrollHeight; return d;
-}
-function thinking(){
-  const d=add('Kira думает .','ai thinking'); let n=1;
-  const timer=setInterval(()=>{n=n%3+1;d.textContent='Kira думает '+'.'.repeat(n)},650);
-  return ()=>{clearInterval(timer);d.remove()};
-}
-
-async function call(action,payload={}){
-  const r=await fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
-    action, initData:tg?.initData||'', ...payload
-  })});
-  const text=await r.text();
-  let data; try{data=JSON.parse(text)}catch{throw new Error(text||'Ответ сервера не JSON')};
-  if(!r.ok || data.error) throw new Error(data.error||'Ошибка сервера');
-  return data;
-}
-
-async function send(){
-  const box=$('#input'), text=box.value.trim(); if(!text)return;
-  box.value=''; add(text,'user'); const stop=thinking();
-  try{
-    const data=await call('chat',{message:text});
-    stop();
-    add(data.reply||data.message||data.text||'Готово.');
-  }catch(e){stop();add('Не получилось выполнить запрос: '+e.message)}
-}
-$('#send').onclick=send;
-$('#input').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send()}});
-
-async function tool(action){
-  const out=$('#toolResult'); out.style.display='block'; out.textContent='Kira думает ...';
-  try{
-    if(action==='image'){
-      const prompt=window.prompt('Что нарисовать?','Атмосферный арт Kira ночью под луной');
-      if(!prompt)return;
-      const data=await call('image',{prompt});
-      out.innerHTML='';
-      if(data.url){const img=new Image();img.src=data.url;out.appendChild(img)}
-      else if(data.b64_json){const img=new Image();img.src='data:image/png;base64,'+data.b64_json;out.appendChild(img)}
-      else out.textContent=data.result||data.message||'Изображение создано.';
-      return;
-    }
-    const data=await call(action);
-    out.textContent=data.text||data.result||data.message||JSON.stringify(data,null,2);
-  }catch(e){out.textContent='Ошибка: '+e.message}
-}
-document.querySelectorAll('.tool').forEach(x=>x.onclick=()=>tool(x.dataset.action));
-
-async function loadProfile(){
-  const u=tg?.initDataUnsafe?.user;
-  if(u){$('#pname').textContent=[u.first_name,u.last_name].filter(Boolean).join(' ')||u.username||'Пользователь';$('#pid').textContent=u.id||'—'}
-  try{
-    const d=await call('profile');
-    const p=d.profile||d.user||d;
-    if(p){$('#pname').textContent=p.first_name||p.username||$('#pname').textContent;$('#pid').textContent=p.telegram_user_id||p.id||$('#pid').textContent}
-  }catch{}
-}
-loadProfile();
-</script>
 </body>
 </html>
