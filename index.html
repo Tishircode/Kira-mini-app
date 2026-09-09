@@ -44,7 +44,7 @@ body:after{
   background:radial-gradient(circle at 50% 35%,transparent 0,#090a0f33 48%,#090a0f 100%);
 }
 button,textarea{font:inherit}button{touch-action:manipulation}
-.app{width:min(1160px,calc(100% - 34px));margin:auto;padding:18px 0 42px}
+.app{width:min(1160px,calc(100% - 34px));margin:auto;padding:18px 0 calc(42px + env(safe-area-inset-bottom))}
 .layout{display:grid;grid-template-columns:210px minmax(0,1fr);gap:22px}
 .sidebar{
   position:sticky;top:18px;height:calc(100vh - 36px);min-height:590px;
@@ -82,18 +82,18 @@ h1{max-width:700px;margin:0;font-size:clamp(43px,6.5vw,78px);line-height:.94;let
 .hero-card{min-width:230px;padding:15px 17px;border:1px solid var(--line);border-radius:18px;background:#ffffff08;backdrop-filter:blur(12px)}.hero-card small{color:var(--muted);font-size:9px;letter-spacing:.12em;text-transform:uppercase}.hero-card strong{display:block;margin-top:7px;font-size:21px}.hero-card em{color:var(--green);font-size:11px;font-style:normal}.signature{color:#aaa1d5;font-size:11px}.signature b{color:#fff}
 .tabs{display:flex;gap:8px;margin:16px 0 13px}.tab{border:1px solid var(--line);border-radius:14px;padding:10px 15px;background:#10121a;color:var(--muted);cursor:pointer;font-size:12px;transition:.25s}.tab:hover,.tab.active{color:#fff;border-color:#a99cff66;background:linear-gradient(135deg,#8d7aff2b,#ff76bd16)}
 .page{display:none}.page.active{display:block;animation:appear .35s ease both}@keyframes appear{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
-.section-title{display:flex;justify-content:space-between;align-items:end;margin:23px 2px 12px}.section-title h2{margin:0;font-size:20px;letter-spacing:-.03em}.section-title span{color:var(--muted);font-size:10px;letter-spacing:.1em}
+.section-title{display:flex;justify-content:space-between;align-items:end;margin:23px 2px 12px}.section-title h2{margin:0;font-size:20px;letter-spacing:-.03em}.section-title span{color:var(--muted);font-size:10px;letter-spacing:.1em}.section-actions{display:flex;gap:8px;align-items:center}.small-button{border:1px solid var(--line);border-radius:11px;padding:7px 10px;color:var(--muted);background:#11131b;cursor:pointer;font-size:10px;transition:.2s}.small-button:hover{color:#fff;border-color:#a99cff66}
 .card{border:1px solid var(--line);border-radius:var(--radius);background:#11131bdc;box-shadow:0 18px 55px #0006;backdrop-filter:blur(16px)}
 .chat{height:min(52vh,560px);min-height:350px;overflow:auto;padding:20px;scrollbar-width:thin;scrollbar-color:#505467 transparent}
 .msg{max-width:min(82%,700px);padding:13px 15px;margin-bottom:10px;border:1px solid var(--line);border-radius:17px;line-height:1.58;font-size:14px;white-space:pre-wrap;animation:msg .3s ease both}@keyframes msg{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 .msg.ai{margin-right:auto;background:var(--surface-2);color:#e1e4ef}.msg.user{margin-left:auto;background:linear-gradient(135deg,#7968ef,#bd5597);border-color:transparent}.msg.thinking{color:var(--muted);font-style:italic}
-.composer{display:flex;gap:10px;padding:14px;border-top:1px solid var(--line)}textarea{width:100%;resize:none;min-height:52px;max-height:150px;padding:14px 15px;outline:none;color:#fff;background:#0b0d13;border:1px solid var(--line);border-radius:16px}textarea:focus{border-color:#a99cff88;box-shadow:0 0 0 3px #8d7aff12}.send{width:58px;border:0;border-radius:16px;color:#fff;background:linear-gradient(135deg,var(--violet),var(--pink));cursor:pointer;font-size:21px;transition:.2s}.send:hover{transform:translateY(-2px)}.send:disabled{opacity:.5}.hint{padding:0 17px 14px;color:#62697b;font-size:10px}
+.composer{display:flex;gap:10px;padding:14px;border-top:1px solid var(--line)}textarea{width:100%;resize:none;min-height:52px;max-height:150px;padding:14px 15px;outline:none;color:#fff;background:#0b0d13;border:1px solid var(--line);border-radius:16px}textarea:focus{border-color:#a99cff88;box-shadow:0 0 0 3px #8d7aff12}.send{width:58px;border:0;border-radius:16px;color:#fff;background:linear-gradient(135deg,var(--violet),var(--pink));cursor:pointer;font-size:21px;transition:.2s}.send:hover{transform:translateY(-2px)}.send:disabled{opacity:.5;cursor:wait}.hint{padding:0 17px 9px;color:#62697b;font-size:10px}.quick-prompts{display:flex;gap:7px;overflow:auto;padding:0 14px 14px}.quick-prompts button{flex:0 0 auto;border:1px solid var(--line);border-radius:11px;padding:7px 9px;color:var(--soft);background:#ffffff08;cursor:pointer;font-size:10px}.quick-prompts button:hover{border-color:#a99cff66;color:#fff}
 .tools-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:11px}.tool{min-height:132px;padding:17px;text-align:left;border:1px solid var(--line);border-radius:19px;color:#fff;background:linear-gradient(145deg,#171a25,#10121a);cursor:pointer;transition:.25s}.tool:hover{transform:translateY(-4px);border-color:#a99cff66;background:#1b1e2c}.tool strong{display:block;font-size:15px;margin-bottom:9px}.tool span{color:var(--muted);font-size:11px;line-height:1.4}
-.result{display:none;margin-top:13px;padding:18px;line-height:1.65;white-space:pre-wrap;color:var(--soft)}.result img{display:block;max-width:100%;margin-top:12px;border-radius:14px}
+.result{display:none;margin-top:13px;padding:18px;line-height:1.65;white-space:pre-wrap;color:var(--soft)}.result img{display:block;max-width:100%;margin-top:12px;border-radius:14px}.tool-result-actions{display:none;justify-content:flex-end;margin-top:9px}.toast{position:fixed;z-index:20;left:50%;bottom:86px;transform:translate(-50%,12px);max-width:calc(100% - 34px);padding:11px 14px;border:1px solid var(--line-strong);border-radius:14px;color:var(--soft);background:#171a24f2;box-shadow:0 15px 35px #0008;font-size:12px;opacity:0;pointer-events:none;transition:.25s}.toast.visible{opacity:1;transform:translate(-50%,0)}
 .profile-card{padding:7px 20px}.row{display:flex;justify-content:space-between;gap:20px;padding:18px 0;border-bottom:1px solid var(--line);font-size:13px;color:var(--muted)}.row:last-child{border:0}.row b{color:#fff;text-align:right}.mobile-nav{display:none}
 @media(max-width:850px){
-  .app{width:100%;padding:0 14px 92px}.layout{display:block}.sidebar{display:none}.topbar{height:62px;padding:0 4px 10px}.hero{min-height:414px;padding:28px 23px 23px}.hero-bottom{align-items:start;flex-direction:column;gap:17px}.hero-card{min-width:0;width:100%}.signature{align-self:flex-end}.tools-grid{grid-template-columns:repeat(2,1fr)}.tabs{overflow:auto;padding-bottom:2px}.tab{white-space:nowrap}
-  .mobile-nav{display:flex;position:fixed;z-index:10;left:50%;bottom:12px;transform:translateX(-50%);width:calc(100% - 24px);justify-content:space-around;padding:7px;border:1px solid var(--line);border-radius:20px;background:#171a24eb;backdrop-filter:blur(18px);box-shadow:0 12px 35px #0009}.mobile-nav button{text-align:center;padding:8px 17px;font-size:10px}.mobile-nav button.active{color:#fff;background:#ffffff0d}.mobile-nav button i{display:block;font-style:normal;font-size:17px;margin-bottom:2px}.chat{min-height:52vh;height:54vh}.msg{max-width:90%}
+  .app{width:100%;padding:0 14px calc(92px + env(safe-area-inset-bottom))}.layout{display:block}.sidebar{display:none}.topbar{height:62px;padding:0 4px 10px}.hero{min-height:414px;padding:28px 23px 23px}.hero-bottom{align-items:start;flex-direction:column;gap:17px}.hero-card{min-width:0;width:100%}.signature{align-self:flex-end}.tools-grid{grid-template-columns:repeat(2,1fr)}.tabs{overflow:auto;padding-bottom:2px}.tab{white-space:nowrap}
+  .mobile-nav{display:flex;position:fixed;z-index:10;left:50%;bottom:calc(12px + env(safe-area-inset-bottom));transform:translateX(-50%);width:calc(100% - 24px);justify-content:space-around;padding:7px;border:1px solid var(--line);border-radius:20px;background:#171a24eb;backdrop-filter:blur(18px);box-shadow:0 12px 35px #0009}.mobile-nav button{text-align:center;padding:8px 17px;font-size:10px}.mobile-nav button.active{color:#fff;background:#ffffff0d}.mobile-nav button i{display:block;font-style:normal;font-size:17px;margin-bottom:2px}.chat{min-height:52vh;height:54vh}.msg{max-width:90%}
 }
 @media(max-width:420px){h1{font-size:40px}.hero p{font-size:13px}.tool{min-height:116px;padding:14px}.tool strong{font-size:14px}.profile-card{padding:4px 15px}}
 </style>
@@ -136,11 +136,16 @@ h1{max-width:700px;margin:0;font-size:clamp(43px,6.5vw,78px);line-height:.94;let
       </nav>
 
       <section id="chat" class="page active">
-        <div class="section-title"><h2>Личный диалог</h2><span>AI CONVERSATION</span></div>
+        <div class="section-title"><h2>Личный диалог</h2><div class="section-actions"><span>AI CONVERSATION</span><button class="small-button" id="clearChat" type="button">Очистить</button></div></div>
         <div class="card">
-          <div id="messages" class="chat"><div class="msg ai">Привет! 🦊 Я Kira. Расскажи, с чем помочь — отвечу по делу и без лишнего шума.</div></div>
-          <div class="composer"><textarea id="input" rows="1" placeholder="Напишите сообщение..."></textarea><button class="send" id="send" aria-label="Отправить">↑</button></div>
+          <div id="messages" class="chat" aria-live="polite"><div class="msg ai">Привет! 🦊 Я Kira. Расскажи, с чем помочь — отвечу по делу и без лишнего шума.</div></div>
+          <div class="composer"><textarea id="input" rows="1" placeholder="Напишите сообщение..." aria-label="Сообщение для Kira"></textarea><button class="send" id="send" aria-label="Отправить">↑</button></div>
           <div class="hint">Enter — отправить · Shift + Enter — перенос строки</div>
+          <div class="quick-prompts" aria-label="Быстрые вопросы">
+            <button type="button" data-prompt="Помоги составить план на сегодня">План на день</button>
+            <button type="button" data-prompt="Дай три идеи для нового проекта">Новые идеи</button>
+            <button type="button" data-prompt="Объясни сложную тему простыми словами">Объяснить просто</button>
+          </div>
         </div>
       </section>
 
@@ -157,6 +162,7 @@ h1{max-width:700px;margin:0;font-size:clamp(43px,6.5vw,78px);line-height:.94;let
           <button class="tool" data-action="image"><strong>🎨 Образ</strong><span>Создать изображение</span></button>
         </div>
         <div id="toolResult" class="card result"></div>
+        <div id="toolResultActions" class="tool-result-actions"><button id="sendToolResult" class="small-button" type="button">Продолжить в диалоге →</button></div>
       </section>
 
       <section id="profile" class="page">
@@ -165,6 +171,8 @@ h1{max-width:700px;margin:0;font-size:clamp(43px,6.5vw,78px);line-height:.94;let
           <div class="row"><span>Пользователь</span><b id="pname">—</b></div>
           <div class="row"><span>Telegram ID</span><b id="pid">—</b></div>
           <div class="row"><span>Уровень доступа</span><b>Mini App</b></div>
+          <div class="row"><span>Сохранено в памяти</span><b id="pmemory">0 реплик</b></div>
+          <div class="row"><span>Kira-бонусы</span><b id="pbonus">0</b></div>
           <div class="row"><span>Статус</span><b style="color:var(--green)">● Online</b></div>
         </div>
       </section>
@@ -181,4 +189,7 @@ h1{max-width:700px;margin:0;font-size:clamp(43px,6.5vw,78px);line-height:.94;let
 
 
 
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<script src="app.js"></script>
 </body></html>
