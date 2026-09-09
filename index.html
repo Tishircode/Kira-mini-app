@@ -96,6 +96,10 @@ h1{max-width:700px;margin:0;font-size:clamp(43px,6.5vw,78px);line-height:.94;let
   .mobile-nav{display:flex;position:fixed;z-index:10;left:50%;bottom:calc(12px + env(safe-area-inset-bottom));transform:translateX(-50%);width:calc(100% - 24px);justify-content:space-around;padding:7px;border:1px solid var(--line);border-radius:20px;background:#171a24eb;backdrop-filter:blur(18px);box-shadow:0 12px 35px #0009}.mobile-nav button{text-align:center;padding:8px 17px;font-size:10px}.mobile-nav button.active{color:#fff;background:#ffffff0d}.mobile-nav button i{display:block;font-style:normal;font-size:17px;margin-bottom:2px}.chat{min-height:52vh;height:54vh}.msg{max-width:90%}
 }
 @media(max-width:420px){h1{font-size:40px}.hero p{font-size:13px}.tool{min-height:116px;padding:14px}.tool strong{font-size:14px}.profile-card{padding:4px 15px}}
+
+/* Kira feature UI */
+.feature-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:11px;margin-top:13px}.feature-panel{padding:17px}.feature-panel h3{margin:0 0 7px;font-size:15px}.feature-panel p{margin:0 0 13px;color:var(--muted);font-size:11px;line-height:1.5}.chips{display:flex;flex-wrap:wrap;gap:7px}.chip{border:1px solid var(--line);border-radius:13px;padding:9px 11px;background:#ffffff08;color:var(--soft);cursor:pointer;font-size:11px}.chip.active,.chip:hover{color:#fff;border-color:#a99cff66;background:#8d7aff1a}.stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:13px}.stat{padding:13px;border:1px solid var(--line);border-radius:16px;background:#ffffff06}.stat small{display:block;color:var(--muted);font-size:9px}.stat strong{display:block;margin-top:5px;font-size:18px}.achievement{display:flex;justify-content:space-between;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}.achievement:last-child{border-bottom:0}.achievement b{font-size:12px}.achievement span{display:block;color:var(--muted);font-size:10px;margin-top:4px}.locked{opacity:.42}.coin{color:#ffd86b}.memory-item{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:12px 0;border-bottom:1px solid var(--line)}.memory-item span{font-size:11px;color:var(--soft)}.danger{border-color:#ff668855;color:#ff9aad}.theme-preview{height:46px;border-radius:15px;margin-bottom:10px;background:linear-gradient(135deg,var(--violet),var(--pink));border:1px solid var(--line)}
+@media(max-width:600px){.feature-grid{grid-template-columns:1fr}.stat-grid{grid-template-columns:repeat(3,1fr)}.feature-panel{padding:14px}}
 </style>
 </head>
 <body>
@@ -155,11 +159,26 @@ h1{max-width:700px;margin:0;font-size:clamp(43px,6.5vw,78px);line-height:.94;let
           <button class="tool" data-action="fact"><strong>🎲 Факт</strong><span>Узнать что-то неожиданное</span></button>
           <button class="tool" data-action="idea"><strong>💡 Идея</strong><span>Получить свежий импульс</span></button>
           <button class="tool" data-action="ton"><strong>💎 TON</strong><span>Состояние рынка и курс</span></button>
-          <button class="tool" data-action="mood"><strong>🥰 Настроение</strong><span>Как Kira себя чувствует</span></button>
-          <button class="tool" data-action="memory"><strong>🧠 Память</strong><span>Сохранённый контекст</span></button>
+          <button class="tool" data-action="character"><strong>🎭 Характер</strong><span>Настроение, доверие и стиль Kira</span></button>
+          <button class="tool" data-action="memory"><strong>🧠 Память</strong><span>Долгосрочные воспоминания</span></button>
           <button class="tool" data-action="bonus"><strong>🎁 Бонус</strong><span>Ежедневная награда</span></button>
+          <button class="tool" data-action="games"><strong>🎮 Игры</strong><span>Мини-игры и награды</span></button>
+          <button class="tool" data-action="achievements"><strong>🏆 Достижения</strong><span>Цели и прогресс</span></button>
+          <button class="tool" data-action="coins"><strong>🪙 Kira Coins</strong><span>Баланс и история</span></button>
+          <button class="tool" data-action="themes"><strong>🌈 Темы</strong><span>Настрой оформление Kira</span></button>
+          <button class="tool" data-action="mood"><strong>🥰 Настроение</strong><span>Как Kira себя чувствует</span></button>
+          <button class="tool" data-action="image"><strong>🎨 Образ</strong><span>Арт, персонаж, аватар, Minecraft и другое</span></button>
           <button class="tool" data-action="profile"><strong>👤 Профиль</strong><span>Посмотреть аккаунт</span></button>
-          <button class="tool" data-action="image"><strong>🎨 Образ</strong><span>Создать изображение</span></button>
+        </div>
+        <div class="feature-grid">
+          <div class="card feature-panel" id="gamesPanel" style="display:none">
+            <h3>🎮 Игры с Кирой</h3><p>Играй и получай XP и Kira Coins.</p>
+            <div class="chips"><button class="chip game-chip" data-game="coin">🪙 Монетка</button><button class="chip game-chip" data-game="dice">🎲 Кубик</button><button class="chip game-chip" data-game="riddle">🧩 Загадка</button><button class="chip game-chip" data-game="quiz">🧠 Викторина</button><button class="chip game-chip" data-game="rpg">⚔️ RPG</button></div>
+          </div>
+          <div class="card feature-panel" id="themesPanel" style="display:none">
+            <h3>🌈 Тема Kira</h3><p>Выбранная тема сохраняется за твоим Telegram-профилем.</p><div class="theme-preview"></div>
+            <div class="chips"><button class="chip theme-chip" data-theme="purple">💜 Purple</button><button class="chip theme-chip" data-theme="night">🌌 Night</button><button class="chip theme-chip" data-theme="sakura">🌸 Sakura</button><button class="chip theme-chip" data-theme="cyber">🔥 Cyber</button><button class="chip theme-chip" data-theme="ocean">🌊 Ocean</button><button class="chip theme-chip" data-theme="forest">🌿 Forest</button></div>
+          </div>
         </div>
         <div id="toolResult" class="card result"></div>
         <div id="toolResultActions" class="tool-result-actions"><button id="sendToolResult" class="small-button" type="button">Продолжить в диалоге →</button></div>
@@ -171,8 +190,13 @@ h1{max-width:700px;margin:0;font-size:clamp(43px,6.5vw,78px);line-height:.94;let
           <div class="row"><span>Пользователь</span><b id="pname">—</b></div>
           <div class="row"><span>Telegram ID</span><b id="pid">—</b></div>
           <div class="row"><span>Уровень доступа</span><b>Mini App</b></div>
-          <div class="row"><span>Сохранено в памяти</span><b id="pmemory">0 реплик</b></div>
-          <div class="row"><span>Kira-бонусы</span><b id="pbonus">0</b></div>
+          <div class="row"><span>Уровень</span><b id="plevel">1</b></div>
+          <div class="row"><span>Дружба / XP</span><b id="pxp">0</b></div>
+          <div class="row"><span>Настроение</span><b id="pmood">75/100</b></div>
+          <div class="row"><span>Доверие Kira</span><b id="ptrust">50/100</b></div>
+          <div class="row"><span>Сохранено в памяти</span><b id="pmemory">0 записей</b></div>
+          <div class="row"><span>Kira Coins</span><b class="coin" id="pcoins">0 🪙</b></div>
+          <div class="row"><span>Достижения</span><b id="pachievements">0</b></div>
           <div class="row"><span>Статус</span><b style="color:var(--green)">● Online</b></div>
         </div>
       </section>
