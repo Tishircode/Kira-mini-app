@@ -244,19 +244,43 @@ function continueToolInChat() {
   input.focus();
 }
 
-async function runTool(action) {
-  if (action === 'profile') {
-    showPage('profile');
-    return;
-  }
+let profileState = {};
+const THEMES = {
+  purple: {'--violet':'#8d7aff','--pink':'#ff76bd','--cyan':'#74d8ff'},
+  night: {'--violet':'#6f8cff','--pink':'#8d7aff','--cyan':'#74d8ff'},
+  sakura: {'--violet':'#ff86bd','--pink':'#ffb1d4','--cyan':'#a9d8ff'},
+  cyber: {'--violet':'#00e5ff','--pink':'#ff2bd6','--cyan':'#00e5ff'},
+  ocean: {'--violet':'#5ea8ff','--pink':'#4edbd1','--cyan':'#8cecff'},
+  forest: {'--violet':'#70c77b','--pink':'#a7d86d','--cyan':'#7ee8c3'}
+};
+function applyTheme(name){const theme=THEMES[name]||THEMES.purple;Object.entries(theme).forEach(([k,v])=>document.documentElement.style.setProperty(k,v));document.body.dataset.theme=name;storageSet('theme',name);document.querySelectorAll('.theme-chip').forEach(b=>b.classList.toggle('active',b.dataset.theme===name));}
+function featureText(title,text){beginToolResult();showToolText(`${title}\n\n${text}`);}
+async function openMemory(){beginToolResult();try{const d=await request('memory',{op:'list'});const rows=d.memory||[];if(!rows.length){showToolText('🧠 Память пока пуста.\n\nKira будет автоматически сохранять действительно важные сведения о тебе.');return;}toolResult.replaceChildren();const title=document.createElement('div');title.textContent=`🧠 Память Kira — ${rows.length} записей`;toolResult.appendChild(title);rows.forEach(item=>{const row=document.createElement('div');row.className='memory-item';const span=document.createElement('span');span.textContent=item.content;const btn=document.createElement('button');btn.className='small-button danger';btn.textContent='Удалить';btn.onclick=async()=>{await request('memory',{op:'delete',id:item.id});row.remove();showToast('Воспоминание удалено');};row.append(span,btn);toolResult.appendChild(row);});toolResult.style.display='block';toolResultActions.style.display='flex';}catch(e){showToolText(errorText(e));}}
+async function openAchievements(){beginToolResult();try{const d=await request('achievements');const unlocked=new Set((d.unlocked||[]).map(x=>x.code));const defs=[['first_chat','🌱 Первый разговор','Отправь первое сообщение'],['friend_100','💜 Друг Киры','Набери 100 XP'],['friend_500','⭐ Старый знакомый','Набери 500 XP'],['friend_1000','🌟 Лучший друг','Набери 1000 XP'],['talker_100','💬 Болтун','Отправь 100 сообщений'],['artist_10','🎨 Художник','Создай 10 изображений'],['gamer_10','🎮 Игрок','Сыграй 10 игр']];toolResult.replaceChildren();defs.forEach(([code,title,desc])=>{const row=document.createElement('div');row.className='achievement '+(unlocked.has(code)?'':'locked');const left=document.createElement('div');left.innerHTML=`<b>${title}</b><span>${desc}</span>`;const right=document.createElement('b');right.textContent=unlocked.has(code)?'✓':'🔒';row.append(left,right);toolResult.appendChild(row);});toolResult.style.display='block';toolResultActions.style.display='flex';}catch(e){showToolText(errorText(e));}}
+async function openCoins(){beginToolResult();try{const d=await request('coins');const ledger=d.ledger||[];const lines=ledger.map(x=>`${Number(x.amount)>0?'+':''}${x.amount} 🪙 — ${x.reason}`).join('\n');showToolText(`🪙 Kira Coins: ${d.balance||0}\n\n${lines||'История пока пуста.'}`);}catch(e){showToolText(errorText(e));}}
+async function openCharacter(){beginToolResult();try{const d=await request('character');const c=d.character||{};showToolText(`🎭 Характер Kira\n\n🥰 Настроение: ${c.mood??75}/100\n💜 Доверие: ${c.trust??50}/100\n⚡ Энергия: ${c.energy??80}/100\n\nСтиль: ${c.style||'friendly'}\n\nKira меняет настроение и реакцию в зависимости от общения.`);}catch(e){showToolText(errorText(e));}}
+async function playGame(game){beginToolResult();try{const d=await request('game',{game});showToolText(`🎮 ${d.result}\n\n🏆 XP: +${d.reward_xp}\n🪙 Kira Coins: +${d.reward_coins}\n🎮 Игр сыграно: ${d.games_played}`);updateProfileStats();}catch(e){showToolText(errorText(e));}}
+async function selectTheme(theme){applyTheme(theme);try{await request('theme',{op:'set',theme});showToast('Тема сохранена ✨');}catch(e){showToast('Не удалось сохранить тему');}}
+async function openThemes(){const panel=$('#themesPanel');panel.style.display=panel.style.display==='none'?'block':'none';const games=$('#gamesPanel');games.style.display='none';beginToolResult();showToolText('🌈 Выбери тему ниже. Текущая тема сохраняется в профиле.');}
+async function openGames(){const panel=$('#gamesPanel');panel.style.display=panel.style.display==='none'?'block':'none';const themes=$('#themesPanel');themes.style.display='none';beginToolResult();showToolText('🎮 Выбери мини-игру ниже. За победы Kira начисляет XP и Kira Coins.');}
 
+async function runTool(action) {
+  if (action === 'profile') { showPage('profile'); return; }
+  if (action === 'memory') { await openMemory(); return; }
+  if (action === 'character') { await openCharacter(); return; }
+  if (action === 'achievements') { await openAchievements(); return; }
+  if (action === 'coins') { await openCoins(); return; }
+  if (action === 'games') { await openGames(); return; }
+  if (action === 'themes') { await openThemes(); return; }
   let payload = {};
   if (action === 'image') {
+    const modes = ['🎨 Арт','👤 Персонаж','🖼️ Аватар','🎮 Minecraft','🧸 Чиби','🌌 Обои'];
+    const mode = window.prompt('Режим генерации:\n' + modes.join('\n'), '🎨 Арт');
+    if (!mode) return;
     const prompt = window.prompt('Опишите изображение для Kira', 'Атмосферный фиолетовый арт Kira ночью');
     if (!prompt || !prompt.trim()) return;
-    payload = { prompt: prompt.trim() };
+    payload = { prompt: prompt.trim(), mode };
   }
-
   beginToolResult();
   const button = document.querySelector(`.tool[data-action="${action}"]`);
   if (button) button.disabled = true;
@@ -264,16 +288,9 @@ async function runTool(action) {
     const data = await request(action, payload);
     if (action !== 'image' || !showImage(data)) showToolText(responseText(data));
   } catch (error) {
-    if (action === 'image') {
-      showToolText(errorText(error));
-      showToast('Не удалось создать изображение');
-    } else {
-      await runBuiltInTool(action);
-      showToast('Сервер недоступен: показан локальный результат');
-    }
-  } finally {
-    if (button) button.disabled = false;
-  }
+    if (action === 'image') { showToolText(errorText(error)); showToast('Не удалось создать изображение'); }
+    else { await runBuiltInTool(action); showToast('Сервер недоступен: показан локальный результат'); }
+  } finally { if (button) button.disabled = false; }
 }
 
 function randomItem(items) {
@@ -346,6 +363,7 @@ function setProfile(profile = {}) {
   const telegramUser = getTelegramUser();
   const name = profile.first_name || profile.name || profile.username || userName(telegramUser);
   const id = profile.telegram_user_id || profile.telegramId || profile.id || (telegramUser && telegramUser.id) || '—';
+  profileState = { ...profileState, ...profile };
   $('#pname').textContent = name;
   $('#pid').textContent = id;
   $('#headerName').textContent = name;
@@ -355,8 +373,14 @@ function setProfile(profile = {}) {
 function updateProfileStats() {
   const memory = storageGet('memory', []);
   const bonus = storageGet('bonus', { total: 0 });
-  $('#pmemory').textContent = `${memory.length} ${memory.length === 1 ? 'реплика' : 'реплик'}`;
+  $('#pmemory').textContent = `${profileState.memory_count ?? memory.length} ${profileState.memory_count === 1 ? 'запись' : 'записей'}`;
   $('#pbonus').textContent = String(bonus.total || 0);
+  $('#plevel').textContent = String(profileState.level ?? 1);
+  $('#pxp').textContent = String(profileState.xp ?? 0);
+  $('#pmood').textContent = `${profileState.mood ?? 75}/100`;
+  $('#ptrust').textContent = `${profileState.trust ?? 50}/100`;
+  $('#pcoins').textContent = `${profileState.coins ?? 0} 🪙`;
+  $('#pachievements').textContent = String(profileState.achievements ?? 0);
 }
 
 async function loadProfile() {
@@ -407,6 +431,12 @@ input.addEventListener('keydown', (event) => {
   }
 });
 
+
+document.querySelectorAll('.game-chip').forEach((button) => button.addEventListener('click', () => playGame(button.dataset.game)));
+document.querySelectorAll('.theme-chip').forEach((button) => button.addEventListener('click', () => selectTheme(button.dataset.theme)));
+
+applyTheme(storageGet('theme','purple'));
 initialiseTelegram();
+if (telegram && telegram.initData) request('theme').then(d => applyTheme(d.theme || 'purple')).catch(() => {});
 resizeInput();
 updateProfileStats();
