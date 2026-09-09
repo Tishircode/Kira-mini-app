@@ -1,7 +1,27 @@
 'use strict';
 
 const API_URL = 'https://nvbxjmunpqswhvqljjed.supabase.co/functions/v1/kira-miniapp';
-const telegram = window.Telegram && window.Telegram.WebApp;
+let telegram = window.Telegram && window.Telegram.WebApp;
+
+function refreshTelegram() {
+  if (window.Telegram && window.Telegram.WebApp) telegram = window.Telegram.WebApp;
+  return telegram;
+}
+
+function getInitData() {
+  const tg = refreshTelegram();
+  if (tg && typeof tg.initData === 'string' && tg.initData.trim()) return tg.initData;
+
+  // Fallback for cases where Telegram's JS bridge is initialized a little later.
+  try {
+    const params = new URLSearchParams(window.location.hash.replace(/^#/, ''));
+    const raw = params.get('tgWebAppData');
+    if (raw) return raw;
+  } catch (_) {
+    // Ignore malformed hash data.
+  }
+  return '';
+}
 const $ = (selector) => document.querySelector(selector);
 const messages = $('#messages');
 const input = $('#input');
@@ -36,7 +56,8 @@ function showToast(message) {
 }
 
 function getTelegramUser() {
-  return telegram && telegram.initDataUnsafe ? telegram.initDataUnsafe.user : null;
+  const tg = refreshTelegram();
+  return tg && tg.initDataUnsafe ? tg.initDataUnsafe.user : null;
 }
 
 function userName(user) {
@@ -131,7 +152,7 @@ async function request(action, payload = {}) {
     const response = await fetch(API_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ action, initData: (telegram && telegram.initData) || '', ...payload }),
+      body: JSON.stringify({ action, initData: getInitData(), ...payload }),
       signal: controller.signal,
     });
     const data = parseResponse(await response.text());
@@ -157,8 +178,11 @@ function responseText(data) {
 
 function errorText(error) {
   const message = error && error.message ? error.message : 'Неизвестная ошибка.';
+  if (/initData_missing|telegram_initdata_missing/i.test(message)) {
+    return 'Telegram открыл Kira, но не передал данные запуска. Перезапустите Mini App кнопкой 🦊 Kira AI.';
+  }
   if (/initData|telegram|authoriz|unauthoriz|401/i.test(message)) {
-    return 'Откройте Kira из Telegram: для запроса нужен подтверждённый Telegram-профиль.';
+    return `Ошибка проверки Telegram: ${message}`;
   }
   return `Не удалось выполнить запрос: ${message}`;
 }
@@ -361,7 +385,7 @@ function updateProfileStats() {
 
 async function loadProfile() {
   setProfile();
-  if (!telegram || !telegram.initData) return;
+  if (!getInitData()) return;
   try {
     const data = await request('profile');
     const source = data.data && typeof data.data === 'object' ? { ...data, ...data.data } : data;
@@ -371,16 +395,29 @@ async function loadProfile() {
   }
 }
 
-function initialiseTelegram() {
-  if (!telegram) {
-    showToast('Для персонального AI-чата откройте приложение из Telegram.');
+async function initialiseTelegram() {
+  let tg = refreshTelegram();
+
+  // Telegram's WebApp bridge can appear just after app.js starts. Give it a moment.
+  for (let attempt = 0; !tg && attempt < 30; attempt += 1) {
+    await new Promise((resolve) => window.setTimeout(resolve, 100));
+    tg = refreshTelegram();
+  }
+
+  if (!tg) {
+    showToast('Kira открыта не как Telegram Mini App. Запустите её кнопкой 🦊 Kira AI.');
     return;
   }
-  telegram.ready();
-  telegram.expand();
-  telegram.setHeaderColor && telegram.setHeaderColor('#090a0f');
-  telegram.setBackgroundColor && telegram.setBackgroundColor('#090a0f');
+
+  tg.ready();
+  tg.expand();
+  tg.setHeaderColor && tg.setHeaderColor('#090a0f');
+  tg.setBackgroundColor && tg.setBackgroundColor('#090a0f');
   setProfile();
+
+  if (!getInitData()) {
+    showToast('Telegram WebApp подключён, но данные запуска не переданы. Перезапустите 🦊 Kira AI.');
+  }
 }
 
 document.querySelectorAll('[data-page]').forEach((button) => {
