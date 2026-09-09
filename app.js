@@ -148,7 +148,8 @@ async function request(action, payload = {}) {
 }
 
 function responseText(data) {
-  const value = data.reply || data.text || data.result || data.message || data.answer || data.content;
+  const source = data.data && typeof data.data === 'object' ? { ...data, ...data.data } : data;
+  const value = source.reply || source.text || source.result || source.message || source.answer || source.content;
   if (typeof value === 'string') return value;
   if (value && typeof value === 'object') return value.text || value.message || JSON.stringify(value, null, 2);
   return 'Готово.';
@@ -196,17 +197,27 @@ function showToolText(text) {
   toolResultActions.style.display = 'flex';
 }
 
+function beginToolResult() {
+  latestToolText = '';
+  toolResult.replaceChildren();
+  toolResult.style.display = 'block';
+  toolResult.textContent = 'Kira готовит результат…';
+  toolResultActions.style.display = 'none';
+}
+
 function showImage(data) {
-  const imageUrl = data.url || data.image_url || (data.image && data.image.url);
-  const base64 = data.b64_json || (data.image && data.image.b64_json);
+  const source = data.data && typeof data.data === 'object' ? { ...data, ...data.data } : data;
+  const image = source.image || (Array.isArray(source.images) ? source.images[0] : null) || {};
+  const imageUrl = source.url || source.image_url || image.url || image.image_url;
+  const base64 = source.b64_json || image.b64_json;
   if (!imageUrl && !base64) return false;
   toolResult.replaceChildren();
   const caption = document.createElement('div');
-  caption.textContent = data.message || 'Образ готов.';
-  const image = new Image();
-  image.alt = 'Изображение, созданное Kira';
-  image.src = imageUrl || `data:image/png;base64,${base64}`;
-  toolResult.append(caption, image);
+  caption.textContent = source.message || 'Образ готов.';
+  const imageElement = new Image();
+  imageElement.alt = 'Изображение, созданное Kira';
+  imageElement.src = imageUrl || `data:image/png;base64,${base64}`;
+  toolResult.append(caption, imageElement);
   toolResult.style.display = 'block';
   latestToolText = caption.textContent;
   toolResultActions.style.display = 'flex';
@@ -239,24 +250,27 @@ async function runTool(action) {
     return;
   }
 
-  if (action !== 'image') {
-    await runBuiltInTool(action);
-    return;
+  let payload = {};
+  if (action === 'image') {
+    const prompt = window.prompt('Опишите изображение для Kira', 'Атмосферный фиолетовый арт Kira ночью');
+    if (!prompt || !prompt.trim()) return;
+    payload = { prompt: prompt.trim() };
   }
 
-  const prompt = window.prompt('Опишите изображение для Kira', 'Атмосферный фиолетовый арт Kira ночью');
-  if (!prompt || !prompt.trim()) return;
-  const payload = { prompt: prompt.trim() };
-
-  showToolText('Kira готовит результат…');
+  beginToolResult();
   const button = document.querySelector(`.tool[data-action="${action}"]`);
   if (button) button.disabled = true;
   try {
     const data = await request(action, payload);
     if (action !== 'image' || !showImage(data)) showToolText(responseText(data));
   } catch (error) {
-    showToolText(errorText(error));
-    showToast('Модуль временно недоступен');
+    if (action === 'image') {
+      showToolText(errorText(error));
+      showToast('Не удалось создать изображение');
+    } else {
+      await runBuiltInTool(action);
+      showToast('Сервер недоступен: показан локальный результат');
+    }
   } finally {
     if (button) button.disabled = false;
   }
@@ -350,7 +364,8 @@ async function loadProfile() {
   if (!telegram || !telegram.initData) return;
   try {
     const data = await request('profile');
-    setProfile(data.profile || data.user || data);
+    const source = data.data && typeof data.data === 'object' ? { ...data, ...data.data } : data;
+    setProfile(source.profile || source.user || source);
   } catch (_) {
     // The locally supplied Telegram user remains visible if the profile endpoint is unavailable.
   }
